@@ -4,40 +4,55 @@ import Card from './Card';
 import faker from 'faker';
 
 function App() {
-  const [name, setName] = useState(faker.name.findName())
-  const cardButtons = (
-    <div>
-      <button class="button b utton2">yes</button>
-      <button class="button button3">no</button>
-    </div>
-  );
+  const [cards, setCards] = useState([
+    { 
+      id: faker.random.alphaNumeric(10),
+      avatar: faker.image.avatar(),
+      name: faker.name.firstName(),
+      carrer: faker.name.jobTitle(),
+    },
+    {
+      id: faker.random.alphaNumeric(10),
+      avatar: faker.image.avatar(),
+      name: faker.name.firstName(),
+      carrer: faker.name.jobTitle(),
+    },
+    {
+      id: faker.random.alphaNumeric(10),
+      avatar: faker.image.avatar(),
+      name: faker.name.firstName(),
+      carrer: faker.name.jobTitle(),
+    },
+  ]);
 
-  const handleChangeName = () => {
-    // setName(`${faker.name.firstName() + ' ' + faker.name.lastName()}`)
-    setName(`Tarso Virgilio`)
+  const handleDelete = (cardIndex) => {
+    console.log(cards);
+    const cardsCopy = [...cards];
+    cardsCopy.splice(cardIndex, 1);
+    setCards(cardsCopy);
   };
+
+  const handleChangeName = (event, id) => {
+    const cardIndex = cards.findIndex(card=>card.id===id);
+    const cardsCopy = [...cards];
+    cardsCopy[cardIndex].name = event.target.value;
+    setCards(cardsCopy);
+  };
+
+  const cardslist = cards && (cards.map((card, index)=>
+    <Card 
+      avatar= {card.avatar}
+      name={card.name} 
+      carrer={card.carrer}
+      key={card.id}
+      onDelete={()=>handleDelete(index) }
+      onChangeName={(event)=>handleChangeName(event, card.id)}/>
+    )
+  );
 
   return (
     <div className="App">
-      <button className='button' onClick={handleChangeName}> Change Name </button>
-      <Card 
-        avatar= {`${faker.image.avatar()}`}
-        name={name} 
-        carrer={`${faker.name.jobTitle()}`}>
-        {cardButtons}
-      </Card>
-      <Card 
-        avatar= {`${faker.image.avatar()}`}
-        name={`${faker.name.findName() + ' ' + faker.name.lastName()}`} 
-        carrer={`${faker.name.jobTitle()}`}>
-        {cardButtons}
-      </Card>
-      <Card 
-        avatar= {`${faker.image.avatar()}`}
-        name={`${faker.name.findName() + ' ' + faker.name.lastName()}`} 
-        carrer={`${faker.name.jobTitle()}`}>
-        {cardButtons}
-      </Card>
+      {cardslist}
     </div>
   );
 }
